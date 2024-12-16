@@ -34,91 +34,151 @@ class _AddAlaramState extends State<AddAlarm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Icon(Icons.check),
-          )
-        ],
-        automaticallyImplyLeading: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: const Text(
           'Add Alarm',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
         ),
         centerTitle: true,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.3,
-            width: MediaQuery.of(context).size.width,
-            child: Center(
-                child: CupertinoDatePicker(
-              showDayOfWeek: true,
-              minimumDate: DateTime.now(),
-              dateOrder: DatePickerDateOrder.dmy,
-              onDateTimeChanged: (va) {
-                dateTime = DateFormat().add_jms().format(va);
-
-                Milliseconds = va.microsecondsSinceEpoch;
-
-                notificationtime = va;
-
-                print(dateTime);
-              },
-            )),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-                width: MediaQuery.of(context).size.width,
-                child: CupertinoTextField(
-                  placeholder: "Add Label",
-                  controller: controller,
-                )),
-          ),
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(" Repeat daily"),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 20),
+            Text(
+              "Set Time",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
               ),
-              CupertinoSwitch(
-                value: repeat,
-                onChanged: (bool value) {
-                  repeat = value;
+            ),
+            SizedBox(height: 10),
+            Container(
+              height: 150,
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: CupertinoDatePicker(
+                backgroundColor: Colors.transparent,
+                showDayOfWeek: true,
+                minimumDate: DateTime.now(),
+                dateOrder: DatePickerDateOrder.dmy,
+                onDateTimeChanged: (va) {
+                  dateTime = DateFormat().add_jms().format(va);
 
-                  if (repeat == false) {
-                    name = "none";
-                  } else {
-                    name = "Everyday";
-                  }
+                  Milliseconds = va.microsecondsSinceEpoch;
 
-                  setState(() {});
+                  notificationtime = va;
+
+                  print(dateTime);
                 },
               ),
-            ],
-          ),
-          ElevatedButton(
-              onPressed: () {
-                Random random = new Random();
-                int randomNumber = random.nextInt(100);
+            ),
+            SizedBox(height: 20),
+            Text(
+              "Label",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(height: 10),
+            CupertinoTextField(
+              placeholder: "Add Label",
+              placeholderStyle: TextStyle(
+                color: Colors.grey[400],
+                fontSize: 16,
+              ),
+              controller: controller,
+              padding: EdgeInsets.all(16.0),
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Repeat Daily",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                ),
+                CupertinoSwitch(
+                  value: repeat,
+                  activeColor: Colors.black,
+                  onChanged: (bool value) {
+                    repeat = value;
 
-                context.read<alarmprovider>().SetAlaram(controller.text,
-                    dateTime!, true, name!, randomNumber, Milliseconds!);
-                context.read<alarmprovider>().SetData();
+                    if (repeat == false) {
+                      name = "none";
+                    } else {
+                      name = "Everyday";
+                    }
 
-                context
-                    .read<alarmprovider>()
-                    .SecduleNotification(notificationtime!, randomNumber);
+                    setState(() {});
+                  },
+                ),
+              ],
+            ),
+            Spacer(),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: () {
+                  Random random = new Random();
+                  int randomNumber = random.nextInt(100);
 
-                Navigator.pop(context);
-              },
-              child: Text("Set Alaram")),
-        ],
+                  context.read<alarmprovider>().SetAlaram(controller.text,
+                      dateTime!, true, name!, randomNumber, Milliseconds!);
+                  context.read<alarmprovider>().SetData();
+
+                  context
+                      .read<alarmprovider>()
+                      .SecduleNotification(notificationtime!, randomNumber);
+
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Set Alarm",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }

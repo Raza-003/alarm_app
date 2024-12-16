@@ -58,9 +58,41 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFEEEFF5),
+      floatingActionButton:  Container(
+            padding: EdgeInsets.symmetric(vertical: 24.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AddAlarm()));
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Icon(
+                    Icons.add,
+                    color: Colors.black,
+                    size: 28,
+                  ),
+                ),
+              ),
+            ),
+          ),
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.deepPurpleAccent,
+        backgroundColor: Colors.black,
+        elevation: 0,
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -71,119 +103,113 @@ class _MyAppState extends State<MyApp> {
           )
         ],
         title: const Text(
-          'Alarm Clock ',
-          style: TextStyle(color: Colors.white),
+          'Alarm Clock',
+          style: TextStyle(
+              color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18),
         ),
         centerTitle: true,
       ),
       body: ListView(
         children: [
           Container(
-            decoration: BoxDecoration(
-                color: Colors.deepPurpleAccent,
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30))),
-            height: MediaQuery.of(context).size.height * 0.1,
+            padding: EdgeInsets.symmetric(vertical: 16.0),
             child: Center(
-                child: Text(
-              DateFormat.yMEd().add_jms().format(
-                    DateTime.now(),
-                  ),
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: Colors.white),
-            )),
+              child: Text(
+                DateFormat.yMEd().add_jms().format(
+                      DateTime.now(),
+                    ),
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: Colors.white,
+                ),
+              ),
+            ),
           ),
           Consumer<alarmprovider>(builder: (context, alarm, child) {
             return Container(
               height: MediaQuery.of(context).size.height * 0.7,
               child: ListView.builder(
-                  itemCount: alarm.modelist.length,
-                  itemBuilder: (BuildContext, index) {
-                    return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          height: MediaQuery.of(context).size.height * 0.1,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white,
+                itemCount: alarm.modelist.length,
+                itemBuilder: (BuildContext, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 8.0),
+                    child: Container(
+                      padding: EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.grey[850],
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 8,
+                            offset: Offset(0, 4),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          alarm.modelist[index].dateTime!,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                              color: Colors.black),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 8.0),
-                                          child: Text("|" +
-                                              alarm.modelist[index].label
-                                                  .toString()),
-                                        ),
-                                      ],
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    alarm.modelist[index].dateTime!,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18,
+                                      color: Colors.white,
                                     ),
-                                    CupertinoSwitch(
-                                        value: (alarm.modelist[index]
-                                                    .milliseconds! <
-                                                DateTime.now()
-                                                    .microsecondsSinceEpoch)
-                                            ? false
-                                            : alarm.modelist[index].check,
-                                        onChanged: (v) {
-                                          alarm.EditSwitch(index, v);
+                                  ),
+                                  SizedBox(width: 8.0),
+                                  Text(
+                                    "| ${alarm.modelist[index].label}",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14,
+                                      color: Colors.grey[400],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              CupertinoSwitch(
+                                value: (alarm.modelist[index].milliseconds! <
+                                        DateTime.now().microsecondsSinceEpoch)
+                                    ? false
+                                    : alarm.modelist[index].check,
+                                activeColor: Colors.white,
+                                trackColor: Colors.grey[700],
+                                onChanged: (v) {
+                                  alarm.EditSwitch(index, v);
 
-                                          alarm.CancelNotification(
-                                              alarm.modelist[index].id!);
-                                        }),
-                                  ],
-                                ),
-                                Text(alarm.modelist[index].when!)
-                              ],
+                                  alarm.CancelNotification(
+                                      alarm.modelist[index].id!);
+                                },
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8.0),
+                          Text(
+                            alarm.modelist[index].when!,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[400],
                             ),
                           ),
-                        ));
-                  }),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
             );
           }),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.1,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30)),
-                color: Colors.deepPurpleAccent),
-            child: Center(
-                child: GestureDetector(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AddAlarm()));
-              },
-              child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white, shape: BoxShape.circle),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Icon(Icons.add),
-                  )),
-            )),
-          ),
+         
         ],
+        
       ),
     );
   }
