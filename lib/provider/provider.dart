@@ -110,13 +110,22 @@ class alarmprovider extends ChangeNotifier {
         "${DateFormat().format(DateTime.now())}",
         tz.TZDateTime.now(tz.local).add(Duration(milliseconds: newtime)),
         const NotificationDetails(
-            android: AndroidNotificationDetails(
-                'your channel id', 'your channel name',
-                channelDescription: 'your channel description',
-                sound: RawResourceAndroidNotificationSound("alarm"),
-                autoCancel: false,
-                playSound: true,
-                priority: Priority.max)),
+          android: AndroidNotificationDetails(
+            'your channel id',
+            'your channel name',
+            channelDescription: 'your channel description',
+            sound: RawResourceAndroidNotificationSound("alarm"),
+            autoCancel: false,
+            playSound: true,
+            priority: Priority.max,
+            actions: [
+              AndroidNotificationAction('snooze', 'Snooze',
+                  showsUserInterface: true),
+              AndroidNotificationAction('dismiss', 'Dismiss',
+                  showsUserInterface: true),
+            ],
+          ),
+        ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime);
